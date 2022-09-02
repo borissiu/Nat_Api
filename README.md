@@ -1,11 +1,69 @@
 # Nat_Api
-1. A10 Initial Config
-2. Create 1:1 NAT (a few entries) by running ./api_nat_static_1.sh
-3. Create 1:1 NAT (30000 entries) by running ./api_nat_range_1.sh
-4. Create 1:Many PAT (access-list based) by running ./api_nat_accesslist_1.sh
-5. Create 1:Maby PAT (class-list based) by running ./api_nat_classlist_1.sh
+1. Create 1:1 NAT (a few entries) by running ./api_nat_static_1.sh
+2. Create 1:1 NAT (30000 entries) by running ./api_nat_range_1.sh
+3. Create 1:Many PAT (access-list based) by running ./api_nat_accesslist_1.sh
+4. Create 1:Maby PAT (class-list based) by running ./api_nat_classlist_1.sh
+5. A10 Initial Config
 
-### A10 Initial Config
+### 1. Create 1:1 NAT (a few entries) by running ./api_nat_static_1.sh
+```
+interface ve 114
+  ip address 114.114.114.31 255.255.255.0
+  ip nat outside
+!
+interface ve 115
+  ip address 115.115.0.31 255.255.0.0
+  ip nat outside
+!
+interface ve 192
+  ip address 10.10.0.31 255.255.0.0
+  ip nat inside
+!
+!
+ip nat inside source static 10.10.0.10 114.114.114.10
+!
+ip nat inside source static 10.10.0.11 114.114.114.11
+!
+ip nat inside source static 10.10.0.15 114.114.114.15 disable
+```
+
+### 2. Create 1:1 NAT (30000 entries) by running ./api_nat_range_1.sh
+```
+ip nat range-list server 10.10.0.128 255.255.255.0 114.114.114.128 255.255.255.0 count 32
+!
+ip nat range-list IoT 10.10.115.128 255.255.0.0 115.115.115.128 255.255.0.0 count 30000
+```
+
+### 3. Create 1:Many PAT (access-list based) by running ./api_nat_accesslist_1.sh
+```
+ip access-list WiFi
+  permit ip 10.10.0.0 0.0.0.7 any log
+!
+ip nat pool snat114 114.114.114.21 114.114.114.23 netmask /24
+!
+ip nat inside source list name WiFi pool snat114
+```
+
+### 4. Create 1:Maby PAT (class-list based) by running ./api_nat_classlist_1.sh
+```
+ip nat pool snat115a 115.115.115.21 115.115.115.23 netmask /16
+!
+ip nat pool snat115b 115.115.115.26 115.115.115.29 netmask /16
+!
+ip nat inside source class-list WiFi_Guest
+!
+glid 5
+  use-nat-pool snat115a
+!
+glid 6
+  use-nat-pool snat115b
+!
+class-list WiFi_Guest ipv4
+  10.10.0.5/32 glid 5
+  10.10.0.6/32 glid 6
+```
+
+### 5. A10 Initial Config
 ```
 NAT_Device_31#show run
 !Current configuration: 844 bytes
@@ -87,4 +145,3 @@ sflow collector ip 127.0.0.1 6343
 !
 end
 ```
-
