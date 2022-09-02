@@ -35,9 +35,6 @@ no class-list WiFi_Guest ipv4
 !
 no ip nat pool snat115a 115.115.115.21 115.115.115.23 netmask /16
 no ip nat pool snat115b 115.115.115.26 115.115.115.29 netmask /16
-!
-no ip nat pool snat115a 115.115.115.21 115.115.115.23 netmask /16
-no ip nat pool snat115b 115.115.115.26 115.115.115.29 netmask /16
 
 end
 
