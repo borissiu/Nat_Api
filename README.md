@@ -101,6 +101,44 @@ snat115b  115.115.115.26          0           5           5           0
 NAT_Device_31#
 ```
 
+```
+boris@Mac Nat_Api % ./api_stat_nat_pool_1.sh
+{
+  "pool-list": [
+    {
+      "stats" : {
+        "Port-Usage": 0,
+        "Total-Used": 49,
+        "Total-Freed": 49,
+        "Failed": 0
+      },
+      "a10-url":"/axapi/v3/ip/nat/pool/snat114/stats",
+      "pool-name":"snat114"
+    },
+    {
+      "stats" : {
+        "Port-Usage": 0,
+        "Total-Used": 1,
+        "Total-Freed": 1,
+        "Failed": 0
+      },
+      "a10-url":"/axapi/v3/ip/nat/pool/snat115a/stats",
+      "pool-name":"snat115a"
+    },
+    {
+      "stats" : {
+        "Port-Usage": 0,
+        "Total-Used": 5,
+        "Total-Freed": 5,
+        "Failed": 0
+      },
+      "a10-url":"/axapi/v3/ip/nat/pool/snat115b/stats",
+      "pool-name":"snat115b"
+    }
+  ]
+}
+```
+
 ### 4. Create 1:Many PAT (class-list based) by running ./api_nat_classlist_1.sh
 ```
 ip nat pool snat115a 115.115.115.21 115.115.115.23 netmask /16
