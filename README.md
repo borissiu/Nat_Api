@@ -37,6 +37,15 @@ Icmp 10.10.0.10:22500  1.1.1.1  1.1.1.1  114.114.114.10:22500      1     1    NS
 Icmp 10.10.0.11:22516  1.1.1.1  1.1.1.1  114.114.114.11:22516      1     2    NSe0f0r0  ST-NAT
 ```
 
+```
+NAT_Device_31#show ip nat static-binding statistics
+Source Address       Port Usage   Total Used   Total Freed
+---------------------------------------------------------------------------
+10.10.0.10           0            2            2
+10.10.0.11           0            6            6
+10.10.0.15           0            0            0
+```
+
 ### 2. Create 1:1 NAT (30000 entries) by running ./api_nat_range_1.sh
 ```
 ip nat range-list server 10.10.0.128 255.255.255.0 114.114.114.128 255.255.255.0 count 32
@@ -48,6 +57,15 @@ ip nat range-list IoT 10.10.115.128 255.255.0.0 115.115.115.128 255.255.0.0 coun
 NAT_Device_31#rep 1 show session | inc Icmp
 Icmp 10.10.115.128:22904  1.1.1.1  1.1.1.1  115.115.115.128:22904     1     5    NSe0f0r0  ST-NAT
 Icmp 10.10.225.229:23023  1.1.1.1  1.1.1.1  115.115.225.229:23023     0     5    NSe0f0r0  ST-NAT
+```
+
+```
+NAT_Device_31#show ip nat range-list
+Total Static NAT range lists: 2
+Name            Local Address/Mask           Global Address/Mask          Count VRID ACL
+------------------------------------------------------------------------------------------------
+server          10.10.0.128/24               114.114.114.128/24           32    0
+IoT             10.10.115.128/16             115.115.115.128/16           30000 0
 ```
 
 ### 3. Create 1:Many PAT (access-list based) by running ./api_nat_accesslist_1.sh
@@ -64,6 +82,23 @@ ip nat inside source list name WiFi pool snat114
 NAT_Device_31#rep 1 show session | inc Icmp
 Icmp 10.10.0.5:25885  1.1.1.1  1.1.1.1  114.114.114.21:2070       1     1    NSe0f0r0  NAT
 Icmp 10.10.0.6:25952  1.1.1.1  1.1.1.1  114.114.114.21:2312       1     3    NSe0f0r0  NAT
+```
+
+```
+NAT_Device_31#show ip nat pool statistics
+Pool      Address                 Port Usage  Total Used  Total Freed Failed
+----------------------------------------------------------------------------
+snat114   114.114.114.21          0           49          49          0
+          114.114.114.22          0           0           0
+          114.114.114.23          0           0           0
+snat115a  115.115.115.21          0           1           1           0
+          115.115.115.22          0           0           0
+          115.115.115.23          0           0           0
+snat115b  115.115.115.26          0           5           5           0
+          115.115.115.27          0           0           0
+          115.115.115.28          0           0           0
+          115.115.115.29          0           0           0
+NAT_Device_31#
 ```
 
 ### 4. Create 1:Many PAT (class-list based) by running ./api_nat_classlist_1.sh
@@ -315,4 +350,21 @@ ip nat template logging nat_logging
   facility syslog
   severity informational
   service-group sg-syslog_udp514
+```
+
+```
+NAT_Device_31#show ip nat alg pptp statistics
+Statistics for PPTP NAT ALG:
+-----------------------------
+Calls In Progress:               0
+Call Creation Failure:           0
+Truncated PNS Message:           0
+Truncated PAC Message:           0
+Mismatched PNS Call ID:          0
+Mismatched PAC Call ID:          0
+Retransmitted PAC Message:       0
+Truncated GRE Packets:           0
+Unknown GRE Packets:             0
+No Matching GRE Session:         0
+NAT_Device_31#
 ```
