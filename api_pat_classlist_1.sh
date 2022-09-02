@@ -1,6 +1,6 @@
 #!/bin/zsh
 ###
-### ./api_demo_nat_static.sh
+### API NAT Demo - 01Sep22
 ###
 
 device="https://192.168.2.31"
