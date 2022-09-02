@@ -45,7 +45,7 @@ ip nat pool snat114 114.114.114.21 114.114.114.23 netmask /24
 ip nat inside source list name WiFi pool snat114
 ```
 
-### 4. Create 1:Maby PAT (class-list based) by running ./api_nat_classlist_1.sh
+### 4. Create 1:Many PAT (class-list based) by running ./api_nat_classlist_1.sh
 ```
 ip nat pool snat115a 115.115.115.21 115.115.115.23 netmask /16
 !
