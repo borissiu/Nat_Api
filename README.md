@@ -5,6 +5,9 @@
 4. Create 1:Maby PAT (class-list based) by running ./api_nat_classlist_1.sh
 5. A10 Initial Config
 6. A10 Config after steps 1, 2, 3, 4
+7. Optional Setting
+
+API Manual : https://acos.docs.a10networks.com/axapi/414gr1p6/ip_nat_inside_source_class_list.html
 
 ### 1. Create 1:1 NAT (a few entries) by running ./api_nat_static_1.sh
 ```
@@ -28,11 +31,23 @@ ip nat inside source static 10.10.0.11 114.114.114.11
 ip nat inside source static 10.10.0.15 114.114.114.15 disable
 ```
 
+```
+NAT_Device_31#rep 1 show session | inc Icmp
+Icmp 10.10.0.10:22500  1.1.1.1  1.1.1.1  114.114.114.10:22500      1     1    NSe0f0r0          ST-NAT
+Icmp 10.10.0.11:22516  1.1.1.1  1.1.1.1  114.114.114.11:22516      1     2    NSe0f0r0          ST-NAT
+```
+
 ### 2. Create 1:1 NAT (30000 entries) by running ./api_nat_range_1.sh
 ```
 ip nat range-list server 10.10.0.128 255.255.255.0 114.114.114.128 255.255.255.0 count 32
 !
 ip nat range-list IoT 10.10.115.128 255.255.0.0 115.115.115.128 255.255.0.0 count 30000
+```
+
+```
+NAT_Device_31#rep 1 show session | inc Icmp
+Icmp 10.10.115.128:22904  1.1.1.1  1.1.1.1  115.115.115.128:22904     1     5    NSe0f0r0          ST-NAT
+Icmp 10.10.225.229:23023  1.1.1.1  1.1.1.1  115.115.225.229:23023     0     5    NSe0f0r0          ST-NAT
 ```
 
 ### 3. Create 1:Many PAT (access-list based) by running ./api_nat_accesslist_1.sh
@@ -43,6 +58,12 @@ ip access-list WiFi
 ip nat pool snat114 114.114.114.21 114.114.114.23 netmask /24
 !
 ip nat inside source list name WiFi pool snat114
+```
+
+```
+NAT_Device_31#rep 1 show session | inc Icmp
+Icmp 10.10.0.5:25885  1.1.1.1  1.1.1.1  114.114.114.21:2070       1     1    NSe0f0r0          NAT
+Icmp 10.10.0.6:25952  1.1.1.1  1.1.1.1  114.114.114.21:2312       1     3    NSe0f0r0          NAT
 ```
 
 ### 4. Create 1:Many PAT (class-list based) by running ./api_nat_classlist_1.sh
@@ -62,6 +83,12 @@ glid 6
 class-list WiFi_Guest ipv4
   10.10.0.5/32 glid 5
   10.10.0.6/32 glid 6
+```
+
+```
+NAT_Device_31#rep 1 show session | inc Icmp
+Icmp 10.10.0.5:28377  1.1.1.1  1.1.1.1  115.115.115.21:2052       1     1    NSe0f0r0          NAT
+Icmp 10.10.0.6:28396  1.1.1.1  1.1.1.1  115.115.115.26:2051       1     3    NSe0f0r0          NAT
 ```
 
 ### 5. A10 Initial Config
@@ -266,4 +293,26 @@ sflow collector ip 127.0.0.1 6343
 end
 !Current config commit point for partition 0 is 0 & config mode is classical-mode
 NAT_Device_31#
+```
+
+### 7. Optional Setting
+```
+ip nat translation service-timeout tcp 8080 age 7200 !(default : follow tcp-timeout setting)
+!
+ip nat-global reset-idle-tcp-conn !(default : off)
+!
+ip nat translation tcp-timeout 600 !(default : 300)
+ip nat translation udp-timeout 600 !(default : 300)
+ip nat translation ignore-tcp-msl  !(default : off)
+!
+ip nat alg pptp enable !(default : off)
+!
+!!! For CGN only?
+ip nat template logging nat_logging
+  log port-mappings creation
+  include-destination
+  include-rip-rport
+  facility syslog
+  severity informational
+  service-group sg-syslog_udp514
 ```
