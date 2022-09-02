@@ -33,8 +33,8 @@ ip nat inside source static 10.10.0.15 114.114.114.15 disable
 
 ```
 NAT_Device_31#rep 1 show session | inc Icmp
-Icmp 10.10.0.10:22500  1.1.1.1  1.1.1.1  114.114.114.10:22500      1     1    NSe0f0r0          ST-NAT
-Icmp 10.10.0.11:22516  1.1.1.1  1.1.1.1  114.114.114.11:22516      1     2    NSe0f0r0          ST-NAT
+Icmp 10.10.0.10:22500  1.1.1.1  1.1.1.1  114.114.114.10:22500      1     1    NSe0f0r0  ST-NAT
+Icmp 10.10.0.11:22516  1.1.1.1  1.1.1.1  114.114.114.11:22516      1     2    NSe0f0r0  ST-NAT
 ```
 
 ### 2. Create 1:1 NAT (30000 entries) by running ./api_nat_range_1.sh
@@ -46,8 +46,8 @@ ip nat range-list IoT 10.10.115.128 255.255.0.0 115.115.115.128 255.255.0.0 coun
 
 ```
 NAT_Device_31#rep 1 show session | inc Icmp
-Icmp 10.10.115.128:22904  1.1.1.1  1.1.1.1  115.115.115.128:22904     1     5    NSe0f0r0          ST-NAT
-Icmp 10.10.225.229:23023  1.1.1.1  1.1.1.1  115.115.225.229:23023     0     5    NSe0f0r0          ST-NAT
+Icmp 10.10.115.128:22904  1.1.1.1  1.1.1.1  115.115.115.128:22904     1     5    NSe0f0r0  ST-NAT
+Icmp 10.10.225.229:23023  1.1.1.1  1.1.1.1  115.115.225.229:23023     0     5    NSe0f0r0  ST-NAT
 ```
 
 ### 3. Create 1:Many PAT (access-list based) by running ./api_nat_accesslist_1.sh
@@ -62,8 +62,8 @@ ip nat inside source list name WiFi pool snat114
 
 ```
 NAT_Device_31#rep 1 show session | inc Icmp
-Icmp 10.10.0.5:25885  1.1.1.1  1.1.1.1  114.114.114.21:2070       1     1    NSe0f0r0          NAT
-Icmp 10.10.0.6:25952  1.1.1.1  1.1.1.1  114.114.114.21:2312       1     3    NSe0f0r0          NAT
+Icmp 10.10.0.5:25885  1.1.1.1  1.1.1.1  114.114.114.21:2070       1     1    NSe0f0r0  NAT
+Icmp 10.10.0.6:25952  1.1.1.1  1.1.1.1  114.114.114.21:2312       1     3    NSe0f0r0  NAT
 ```
 
 ### 4. Create 1:Many PAT (class-list based) by running ./api_nat_classlist_1.sh
@@ -87,8 +87,8 @@ class-list WiFi_Guest ipv4
 
 ```
 NAT_Device_31#rep 1 show session | inc Icmp
-Icmp 10.10.0.5:28377  1.1.1.1  1.1.1.1  115.115.115.21:2052       1     1    NSe0f0r0          NAT
-Icmp 10.10.0.6:28396  1.1.1.1  1.1.1.1  115.115.115.26:2051       1     3    NSe0f0r0          NAT
+Icmp 10.10.0.5:28377  1.1.1.1  1.1.1.1  115.115.115.21:2052       1     1    NSe0f0r0  NAT
+Icmp 10.10.0.6:28396  1.1.1.1  1.1.1.1  115.115.115.26:2051       1     3    NSe0f0r0  NAT
 ```
 
 ### 5. A10 Initial Config
