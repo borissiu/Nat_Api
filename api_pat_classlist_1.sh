@@ -116,7 +116,7 @@ then
   -d "$configNatList"
 
 
-  curl -s -k PUT $device/axapi/v3/logoff \
+  curl -s -k POST $device/axapi/v3/logoff \
   -H "$token" > /dev/null
 else
   echo "$device $statusCode - Please check IP and Credentials"
